@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Link Storage</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+        }
+        #title-input, #link-input {
+            width: 70%;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        #add-link-btn, #link-list {
+            margin-top: 10px;
+        }
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+        li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #0000ff;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+            color : white;
+        }
+        button{
+            all : unset;
+            background-color: purple;
+            padding : 0.4rem;
+            border : 2px solid blue;
+            border-radius : 6px;
+            color : white;
+            font-family : Crimson Text;
+            cursor : pointer;
+        }
+        a {
+            all : unset;
+            cursor : pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Jo hai So hai</h1>
+    <input type="text" id="title-input" placeholder="Enter a title...">
+    <input type="text" id="link-input" placeholder="Enter a link...">
+    <button id="add-link-btn">Add Link</button>
+    <ul id="link-list"></ul>
+
+    <script>
+        // Function to load links from local storage
+        function loadLinks() {
+            // alert(localStorage.getItem('links'));
+            const links = JSON.parse(localStorage.getItem('links')) || [];
+            const linkList = document.getElementById('link-list');
+
+            linkList.innerHTML = ''; // Clear the list
+
+            links.forEach(link => {
+                const { title, url } = link;
+                const li = document.createElement('li');
+                li.innerHTML = `<div><a href="${url}" target="_blank" >${title}</a></div><div><button onclick="deleteLink('${url}')">Delete</button></div>`;
+                linkList.appendChild(li);
+            });
+        }
+
+        // Function to add a link
+        function addLink() {
+            const titleInput = document.getElementById('title-input');
+            const linkInput = document.getElementById('link-input');
+            const title = titleInput.value.trim();
+            const url = linkInput.value.trim();
+
+            if (title === '' || url === '') {
+                alert('Please enter a title and a valid link.');
+                return;
+            }
+
+            const links = JSON.parse(localStorage.getItem('links')) || [];
+            links.push({ title, url });
+            localStorage.setItem('links', JSON.stringify(links));
+
+            loadLinks(); // Reload the list of links
+            titleInput.value = ''; // Clear the title input field
+            linkInput.value = ''; // Clear the link input field
+        }
+
+        // Function to delete a link
+        function deleteLink(linkToDelete) {
+            const links = JSON.parse(localStorage.getItem('links')) || [];
+            const updatedLinks = links.filter(link => link.url !== linkToDelete);
+            localStorage.setItem('links', JSON.stringify(updatedLinks));
+
+            loadLinks(); // Reload the list of links
+        }
+
+        // Load existing links on page load
+        loadLinks();
+
+        // Add event listeners
+        document.getElementById('add-link-btn').addEventListener('click', addLink);
+    </script>
+</body>
+</html>
